@@ -15,9 +15,13 @@ You will need to download <a href="https://terras.gsi.go.jp/ja/crx2rnx.html">crx
  
 The following python3 packages are required:
 
-georinex, numpy, scipy, and urllib
+georinex, numpy, scipy, obspy, and urllib
 
 You should be able to get all of these through pip, brew, or conda depending on your Python install. 
+
+One complexity with georinex is that it is not available through conda directly. You need to install pip on conda and then install georinex by calling the anaconda version of pip3 such that
+
+> /path/to/anaconda/bin/pip3 install georinex
 
 <b>Running the code</b>
 

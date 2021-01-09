@@ -8,7 +8,7 @@ import SNIVEL_tools
 #This code will download any RINEX, nav or UNR
 #time series file requested
 #Written by Brendan Crowell, University of Washington
-#Last edited February 18, 2020
+#Last edited January 8, 2021
 #Broadcast navigation messages are only downloaded from CDDIS
 #RINEX files will try to download from UNAVCO, then CWU, then CDDIS, then SOPAC
 #Time Series files will only download from UNR, cartesian positions
@@ -21,14 +21,24 @@ import SNIVEL_tools
 def getbcorbit(year, doy):
     if not os.path.exists('nav'): #if nav folder doesn't exist, make it
         os.makedirs('nav')
-    fname = 'nav/brdc' + doy + '0.' +  year[-2:] + 'n.Z'
+    fnameZ = 'nav/brdc' + doy + '0.' +  year[-2:] + 'n.Z'
+    fnamegz = 'nav/brdc' + doy + '0.' +  year[-2:] + 'n.gz'
     fname2 = 'nav/brdc' + doy + '0.' +  year[-2:] + 'n'
     if (os.path.isfile(fname2) == True):
         print ('Navigation file ' + fname2 + ' already exists')
     else:
-        url = 'ftp://cddis.nasa.gov/gnss/data/daily/' + year + '/' + doy + '/' + year[-2:] + 'n/brdc' + doy + '0.' +  year[-2:] + 'n.Z'
-        wget.download(url, out='nav/')
-        os.system('gunzip' + ' ' + fname)
+        if (int(year) > 2020):
+            url = 'ftps://gdc.cddis.eosdis.nasa.gov/gnss/data/daily/' + year + '/' + doy + '/' + year[-2:] + 'n/brdc' + doy + '0.' +  year[-2:] + 'n.gz'
+            os.system('wget -O ' + fnamegz + ' --ftp-user anonymous --ftp-password snivel@uw.edu ' + url)
+            os.system('gunzip' + ' ' + fnamegz)
+        elif (int(year) == 2020 and int(doy) >334):
+            url = 'ftps://gdc.cddis.eosdis.nasa.gov/gnss/data/daily/' + year + '/' + doy + '/' + year[-2:] + 'n/brdc' + doy + '0.' +  year[-2:] + 'n.gz'
+            os.system('wget -O ' + fnamegz + ' --ftp-user anonymous --ftp-password snivel@uw.edu ' + url)
+            os.system('gunzip' + ' ' + fnamegz)
+        else:
+            url = 'ftps://gdc.cddis.eosdis.nasa.gov/gnss/data/daily/' + year + '/' + doy + '/' + year[-2:] + 'n/brdc' + doy + '0.' +  year[-2:] + 'n.Z'
+            os.system('wget -O ' + fnameZ + ' --ftp-user anonymous --ftp-password snivel@uw.edu ' + url)
+            os.system('gunzip' + ' ' + fnameZ)
 
 #This subroutine downloads the any sp3 file for a given day from CDDIS
 def getsp3file(year, doy):
